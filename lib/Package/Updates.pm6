@@ -7,7 +7,7 @@ sub get-updates() is export {
 
   if '/etc/apt'.IO.e      { %ret = apt() }
   if '/etc/pacman.d'.IO.e { %ret = pacman() }
-  # if '/etc/yum'.IO.e      { %ret = yum() }
+  if '/etc/yum'.IO.e      { %ret = yum() }
   if $*KERNEL eq "win32"  { %ret = win32() }
 
   return %ret;
@@ -45,6 +45,26 @@ sub pacman() {
       };
     }
   }
+}
+
+sub yum() {
+  my @out-update = (run 'yum', '-q', 'check-update', :out).out.lines;
+
+  return gather for @out-update {
+    next unless $_;
+    next if !$_.words[0] || !$_.words[1];
+    my $packet = $_.words[0];
+    my $newver = $_.words[1];
+
+    my $out-current = (run 'yum', 'list', $packet, :out).out.slurp-rest;
+
+    if $out-current ~~ m:s/$packet\s+(.*?)\s+/ {
+      take $packet => {
+        'current' => $/[0].Str,
+        'new' => $newver
+      };
+    }
+  }    
 }
 
 sub win32(){
