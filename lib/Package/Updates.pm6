@@ -48,7 +48,7 @@ sub pacman() {
 }
 
 sub win32(){
-  my @out-powershell = (shell "powershell ./bin/get-updates.ps1", :out).out.lines;
+  my @out-powershell = (shell "powershell ./get-updates.ps1", :out).out.lines;
 
   return gather for @out-powershell {
     next unless $_;
