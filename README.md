@@ -17,14 +17,20 @@ The updates we get through the subroutine get-updates() that returns a hash. Eac
 * value <new> with the new packet version available to install.
 
 ## Windows Update considerations: ##
-
-* The updates from Windows Update is done using the powershell script get-updates.ps1. This script must be available in the same directory as the script that makes the call to the Package::Updates module.
+* The updates from Windows Update is done using the powershell script get-updates.ps1. This script must be available in the same directory as the script that call the Package::Updates module.
 * The returned hash only provides the name of the package (the hash key) that has a new version available.
 
-## Installing the module ##
+## Permmisions considerations: ##
+The script that call this module must be run by a user with administrative or root privileges.
 
-    zef update
-    zef install Package::Updates
+## Installing the module: ##
+    with zef:
+      zef update
+      zef install Package::Updates
+
+    with Panda:
+      panda update
+      panda install Package::Updates
 
 ## Example Usage: ##
     use v6;
